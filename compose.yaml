@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  # Le service web pour l'application Symfony
+  web:
+    build: .
+    ports:
+      - "8000:80"
+    depends_on:
+      - db
+    volumes:
+      - .:/var/www/html
+    environment:
+      - DATABASE_URL=mysql://user:pass@containerDbName:3306/dbName
+
+  mailer:
+    image: schickling/mailcatcher
+    ports: ["1025", "1080"]
+
+  # Le service MySQL
+  db:
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=dbName
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pass
+      - MYSQL_ROOT_PASSWORD=rootPass
+    volumes:
+      - db_data:/var/lib/mysql
+
+# Volumes pour la persistance des données MySQL
+
+###> doctrine/doctrine-bundle ###
+###< doctrine/doctrine-bundle ###
+volumes:
+  db_data:
+###> doctrine/doctrine-bundle ###
+  database_data:
+###< doctrine/doctrine-bundle ###
